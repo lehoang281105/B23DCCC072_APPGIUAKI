@@ -1,45 +1,70 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { enableScreens } from 'react-native-screens';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { RootStackParamList } from './src/types';
+import { AppProvider } from './src/context/AppContext';
+import { colors } from './src/theme/colors';
+
+import { FieldListScreen } from './src/screens/FieldListScreen';
+import { FieldFormScreen } from './src/screens/FieldFormScreen';
+import { FieldDetailScreen } from './src/screens/FieldDetailScreen';
+
+enableScreens();
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <StatusBar barStyle="light-content" />
+      <AppProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="FieldList"
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: colors.primary,
+              },
+              headerTintColor: colors.textWhite,
+              headerTitleStyle: {
+                fontWeight: '700',
+                fontSize: 18,
+              },
+              contentStyle: {
+                backgroundColor: colors.background,
+              },
+            }}
+          >
+            <Stack.Screen
+              name="FieldList"
+              component={FieldListScreen}
+              options={{
+                title: 'Quản Lý Sân Bóng',
+              }}
+            />
+            <Stack.Screen
+              name="FieldForm"
+              component={FieldFormScreen}
+              options={{
+                title: 'Thông Tin Sân Bóng',
+              }}
+            />
+            <Stack.Screen
+              name="FieldDetail"
+              component={FieldDetailScreen}
+              options={{
+                title: 'Chi Tiết Sân Bóng',
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AppProvider>
     </SafeAreaProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
